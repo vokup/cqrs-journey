@@ -1,3 +1,43 @@
+# My Journey To Modernize CQRS Journey
+### Upgrade to .NET 7.0 Journey
+- [ ] Conference.AcceptanceTests
+	- [ ] Conference.Specflow
+- [ ] Conference.Azure
+- [ ] Conference
+	- [ ] Conference.Common
+	- [ ] Conference.Contracts
+	- [ ] Conference.IntegrationTests
+	- [ ] Conference.Web.Public.Tests
+	- [ ] Conference.Web.Public
+	- [ ] Conference.Web
+	- [ ] Conference
+	- [ ] Payments.Tests
+	- [ ] Payments
+	- [ ] Registration.IntegrationTests
+	- [ ] Registration.Tests
+	- [ ] Registration
+- [ ] DatabaseInitializer
+- [ ] Infrastructure
+	- [ ] Azure
+	- [ ] Infrastructure.Tests
+	- [x] Infrastructure 🎉
+	- [x] Sql 🎉
+- [ ] Migrations
+	- [ ] MigrationToV2.Azure
+	- [ ] MigrationToV2
+	- [ ] MigrationToV3.Azure
+	- [ ] MigrationToV3.InHouseProcessor
+	- [ ] MigrationToV3
+- [ ] Registration.Contracts
+- [ ] WorkerRoleCommandProcessor
+
+### Future Journey
+- [ ] Add GCP Pub/Sub as messaging infrastructure.
+- [ ] Upgrade persistence related to `EFCore` and/or `Dapper`
+- [ ] Add `EventStoreDB` as event persistence storage.
+
+# Original README
+
 ## Microsoft patterns & practices
 # CQRS Journey Reference Implementation
 
