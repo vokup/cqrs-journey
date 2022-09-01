@@ -11,20 +11,19 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Sql.Processes
+namespace Infrastructure.Sql.Processes;
+
+using System;
+
+public class UndispatchedMessages
 {
-    using System;
+    protected UndispatchedMessages() { }
 
-    public class UndispatchedMessages
+    public UndispatchedMessages(Guid id)
     {
-        protected UndispatchedMessages() { }
-
-        public UndispatchedMessages(Guid id)
-        {
-            this.Id = id;
-        }
-
-        public Guid Id { get; set; }
-        public string Commands { get; set; }
+        this.Id = id;
     }
+
+    public Guid Id { get; set; }
+    public string Commands { get; set; }
 }

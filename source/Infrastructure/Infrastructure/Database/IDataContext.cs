@@ -11,19 +11,19 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Database
+namespace Infrastructure.Database;
+
+using System;
+
+/// <summary>
+/// Represents a temporary data context to load and save an entity that implements <see cref="IAggregateRoot"/>.
+/// </summary>
+/// <typeparam name="T">The entity type that will be retrieved or persisted.</typeparam>
+public interface IDataContext<T> : IDisposable
+    where T : IAggregateRoot
 {
-    using System;
+    T Find(Guid id);
 
-    /// <summary>
-    /// Represents a temporary data context to load and save an entity that implements <see cref="IAggregateRoot"/>.
-    /// </summary>
-    /// <typeparam name="T">The entity type that will be retrieved or persisted.</typeparam>
-    public interface IDataContext<T> : IDisposable
-        where T : IAggregateRoot
-    {
-        T Find(Guid id);
-
-        void Save(T aggregate);
-    }
+    void Save(T aggregate);
 }
+

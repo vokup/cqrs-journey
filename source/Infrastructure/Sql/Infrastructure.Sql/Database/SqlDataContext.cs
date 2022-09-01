@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Infrastructure.Sql.Database
 {
     using System;
-    using System.Data.Entity;
     using Infrastructure.Messaging;
     using Infrastructure.Database;
 
@@ -38,7 +39,7 @@ namespace Infrastructure.Sql.Database
         {
             var entry = this.context.Entry(aggregateRoot);
 
-            if (entry.State == System.Data.EntityState.Detached)
+            if (entry.State == EntityState.Detached)
                 this.context.Set<T>().Add(aggregateRoot);
 
             // Can't have transactions across storage and message bus.

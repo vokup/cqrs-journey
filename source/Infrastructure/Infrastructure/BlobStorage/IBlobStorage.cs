@@ -11,14 +11,13 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.BlobStorage
+namespace Infrastructure.BlobStorage;
+
+public interface IBlobStorage
 {
-    public interface IBlobStorage
-    {
-        byte[] Find(string id);
-        //T Find<T>(string id) where T : class;
-        void Save(string id, string contentType, byte[] blob);
-        //void Save<T>(string id, T instance) where T : class;
-        void Delete(string id);
-    }
+    byte[] Find(string id);
+    //T Find<T>(string id) where T : class;
+    void Save(string id, string contentType, byte[] blob);
+    //void Save<T>(string id, T instance) where T : class;
+    void Delete(string id);
 }

@@ -11,22 +11,21 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging.Handling
+namespace Infrastructure.Messaging.Handling;
+
+/// <summary>
+/// Marker interface that makes it easier to discover handlers via reflection.
+/// </summary>
+public interface IEventHandler { }
+
+public interface IEventHandler<T> : IEventHandler
+    where T : IEvent
 {
-    /// <summary>
-    /// Marker interface that makes it easier to discover handlers via reflection.
-    /// </summary>
-    public interface IEventHandler { }
+    void Handle(T @event);
+}
 
-    public interface IEventHandler<T> : IEventHandler
-        where T : IEvent
-    {
-        void Handle(T @event);
-    }
-
-    public interface IEnvelopedEventHandler<T> : IEventHandler
-        where T : IEvent
-    {
-        void Handle(Envelope<T> envelope);
-    }
+public interface IEnvelopedEventHandler<T> : IEventHandler
+    where T : IEvent
+{
+    void Handle(Envelope<T> envelope);
 }

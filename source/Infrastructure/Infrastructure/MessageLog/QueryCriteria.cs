@@ -11,32 +11,31 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.MessageLog
+namespace Infrastructure.MessageLog;
+
+using System;
+using System.Collections.Generic;
+
+/// <summary>
+/// The query criteria for filtering events from the message log when reading.
+/// </summary>
+public class QueryCriteria
 {
-    using System;
-    using System.Collections.Generic;
-
-    /// <summary>
-    /// The query criteria for filtering events from the message log when reading.
-    /// </summary>
-    public class QueryCriteria
+    public QueryCriteria()
     {
-        public QueryCriteria()
-        {
-            this.SourceTypes = new List<string>();
-            this.SourceIds = new List<string>();
-            this.AssemblyNames = new List<string>();
-            this.Namespaces = new List<string>();
-            this.FullNames = new List<string>();
-            this.TypeNames = new List<string>();
-        }
-
-        public ICollection<string> SourceTypes { get; private set; }
-        public ICollection<string> SourceIds { get; private set; }
-        public ICollection<string> AssemblyNames { get; private set; }
-        public ICollection<string> Namespaces { get; private set; }
-        public ICollection<string> FullNames { get; private set; }
-        public ICollection<string> TypeNames { get; private set; }
-        public DateTime? EndDate { get; set; }
+        this.SourceTypes = new List<string>();
+        this.SourceIds = new List<string>();
+        this.AssemblyNames = new List<string>();
+        this.Namespaces = new List<string>();
+        this.FullNames = new List<string>();
+        this.TypeNames = new List<string>();
     }
+
+    public ICollection<string> SourceTypes { get; private set; }
+    public ICollection<string> SourceIds { get; private set; }
+    public ICollection<string> AssemblyNames { get; private set; }
+    public ICollection<string> Namespaces { get; private set; }
+    public ICollection<string> FullNames { get; private set; }
+    public ICollection<string> TypeNames { get; private set; }
+    public DateTime? EndDate { get; set; }
 }

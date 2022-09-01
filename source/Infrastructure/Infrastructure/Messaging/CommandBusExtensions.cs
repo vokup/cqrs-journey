@@ -11,24 +11,23 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging
+namespace Infrastructure.Messaging;
+
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// Provides usability overloads for <see cref="ICommandBus"/>
+/// </summary>
+public static class CommandBusExtensions
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    /// <summary>
-    /// Provides usability overloads for <see cref="ICommandBus"/>
-    /// </summary>
-    public static class CommandBusExtensions
+    public static void Send(this ICommandBus bus, ICommand command)
     {
-        public static void Send(this ICommandBus bus, ICommand command)
-        {
-            bus.Send(new Envelope<ICommand>(command));
-        }
+        bus.Send(new Envelope<ICommand>(command));
+    }
 
-        public static void Send(this ICommandBus bus, IEnumerable<ICommand> commands)
-        {
-            bus.Send(commands.Select(x => new Envelope<ICommand>(x)));
-        }
+    public static void Send(this ICommandBus bus, IEnumerable<ICommand> commands)
+    {
+        bus.Send(commands.Select(x => new Envelope<ICommand>(x)));
     }
 }

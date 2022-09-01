@@ -11,15 +11,15 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Database
-{
-    using System;
+namespace Infrastructure.Database;
 
-    /// <summary>
-    /// Represents an identifiable entity in the system.
-    /// </summary>
-    public interface IAggregateRoot
-    {
-        Guid Id { get; }
-    }
+using System;
+
+/// <summary>
+/// Represents an identifiable entity in the system.
+/// </summary>
+public interface IAggregateRoot
+{
+    Guid Id { get; }
 }
+

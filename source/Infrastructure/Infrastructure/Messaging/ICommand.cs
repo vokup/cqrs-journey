@@ -11,15 +11,14 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging
-{
-	using System;
+namespace Infrastructure.Messaging;
+
+using System;
 	
-	public interface ICommand
-    {
-		/// <summary>
-		/// Gets the command identifier.
-		/// </summary>
-		Guid Id { get; }
-    }
+public interface ICommand
+{
+	/// <summary>
+	/// Gets the command identifier.
+	/// </summary>
+	Guid Id { get; }
 }

@@ -12,11 +12,10 @@
 // ==============================================================================================================
 
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public interface IProcessor
 {
-    public interface IProcessor
-    {
-        void Start();
-        void Stop();
-    }
+    void Start();
+    void Stop();
 }

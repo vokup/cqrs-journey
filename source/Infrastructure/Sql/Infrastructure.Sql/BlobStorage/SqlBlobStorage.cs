@@ -11,46 +11,47 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Sql.BlobStorage
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Sql.BlobStorage;
+
+using Infrastructure.BlobStorage;
+using Infrastructure.Serialization;
+
+/// <summary>
+/// Simple local blob storage simulator for easy local debugging. 
+/// Assumes the blobs are persisted as text through an <see cref="ITextSerializer"/>.
+/// </summary>
+public class SqlBlobStorage : IBlobStorage
 {
-    using Infrastructure.BlobStorage;
-    using Infrastructure.Serialization;
+    private DbContextOptions options;
 
-    /// <summary>
-    /// Simple local blob storage simulator for easy local debugging. 
-    /// Assumes the blobs are persisted as text through an <see cref="ITextSerializer"/>.
-    /// </summary>
-    public class SqlBlobStorage : IBlobStorage
+    public SqlBlobStorage(DbContextOptions options)
     {
-        private string nameOrConnectionString;
+        this.options = options;
+    }
 
-        public SqlBlobStorage(string nameOrConnectionString)
+    public byte[] Find(string id)
+    {
+        using (var context = new BlobStorageDbContext(this.options))
         {
-            this.nameOrConnectionString = nameOrConnectionString;
+            return context.Find(id);
         }
+    }
 
-        public byte[] Find(string id)
+    public void Save(string id, string contentType, byte[] blob)
+    {
+        using (var context = new BlobStorageDbContext(this.options))
         {
-            using (var context = new BlobStorageDbContext(this.nameOrConnectionString))
-            {
-                return context.Find(id);
-            }
+            context.Save(id, contentType, blob);
         }
+    }
 
-        public void Save(string id, string contentType, byte[] blob)
+    public void Delete(string id)
+    {
+        using (var context = new BlobStorageDbContext(this.options))
         {
-            using (var context = new BlobStorageDbContext(this.nameOrConnectionString))
-            {
-                context.Save(id, contentType, blob);
-            }
-        }
-
-        public void Delete(string id)
-        {
-            using (var context = new BlobStorageDbContext(this.nameOrConnectionString))
-            {
-                context.Delete(id);
-            }
+            context.Delete(id);
         }
     }
 }

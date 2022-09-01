@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Infrastructure.Sql.EventSourcing
 {
     using System;
-    using System.Data.Entity;
 
     /// <summary>
     /// Used by <see cref="SqlEventSourcedRepository{T}"/>, and is used only for running the sample application
@@ -24,16 +25,17 @@ namespace Infrastructure.Sql.EventSourcing
     {
         public const string SchemaName = "Events";
 
-        public EventStoreDbContext(string nameOrConnectionString)
-            : base(nameOrConnectionString)
+        public EventStoreDbContext(DbContextOptions options)
+            : base(options)
         {
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Event>().HasKey(x => new { x.AggregateId, x.AggregateType, x.Version }).ToTable("Events", SchemaName);
+            modelBuilder.Entity<Event>().HasKey(x => new { x.AggregateId, x.AggregateType, x.Version });
+            modelBuilder.Entity<Event>().ToTable("Events", SchemaName);
         }
     }
 

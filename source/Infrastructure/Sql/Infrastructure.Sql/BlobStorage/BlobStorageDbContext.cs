@@ -11,81 +11,92 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Sql.BlobStorage
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Sql.BlobStorage;
+
+using System.IO;
+
+public class BlobStorageDbContext : DbContext
 {
-    using System.Data.Entity;
-    using System.IO;
+    public const string SchemaName = "BlobStorage";
 
-    public class BlobStorageDbContext : DbContext
+    // public BlobStorageDbContext(string nameOrConnectionString)
+    //     : base(nameOrConnectionString)
+    // {
+    // }
+
+    public BlobStorageDbContext(DbContextOptions options)
+        : base(options)
     {
-        public const string SchemaName = "BlobStorage";
+    }
+    
+    public byte[] Find(string id)
+    {
+        var blob = this.Set<BlobEntity>().Find(id);
+        if (blob == null)
+            return null;
 
-        public BlobStorageDbContext(string nameOrConnectionString)
-            : base(nameOrConnectionString)
+        return blob.Blob;
+    }
+
+    public void Save(string id, string contentType, byte[] blob)
+    {
+        var existing = this.Set<BlobEntity>().Find(id);
+        string blobString = "";
+        if (contentType == "text/plain")
         {
-        }
-
-        public byte[] Find(string id)
-        {
-            var blob = this.Set<BlobEntity>().Find(id);
-            if (blob == null)
-                return null;
-
-            return blob.Blob;
-        }
-
-        public void Save(string id, string contentType, byte[] blob)
-        {
-            var existing = this.Set<BlobEntity>().Find(id);
-            string blobString = "";
-            if (contentType == "text/plain")
+            Stream stream = null;
+            try
             {
-                Stream stream = null;
-                try
+                stream = new MemoryStream(blob);
+                using (var reader = new StreamReader(stream))
                 {
-                    stream = new MemoryStream(blob);
-                    using (var reader = new StreamReader(stream))
-                    {
-                        stream = null;
-                        blobString = reader.ReadToEnd();
-                    }
-                }
-                finally
-                {
-                    if (stream != null)
-                        stream.Dispose();
+                    stream = null;
+                    blobString = reader.ReadToEnd();
                 }
             }
-
-            if (existing != null)
+            finally
             {
-                existing.Blob = blob;
-                existing.BlobString = blobString;
+                if (stream != null)
+                    stream.Dispose();
             }
-            else
-            {
-                this.Set<BlobEntity>().Add(new BlobEntity(id, contentType, blob, blobString));
-            }
-
-            this.SaveChanges();
         }
 
-        public void Delete(string id)
+        if (existing != null)
         {
-            var blob = this.Set<BlobEntity>().Find(id);
-            if (blob == null)
-                return;
-
-            this.Set<BlobEntity>().Remove(blob);
-
-            this.SaveChanges();
+            existing.Blob = blob;
+            existing.BlobString = blobString;
         }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        else
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<BlobEntity>().ToTable("Blobs", SchemaName);
+            this.Set<BlobEntity>().Add(new BlobEntity(id, contentType, blob, blobString));
         }
+
+        this.SaveChanges();
+    }
+
+    public void Delete(string id)
+    {
+        var blob = this.Set<BlobEntity>().Find(id);
+        if (blob == null)
+            return;
+
+        this.Set<BlobEntity>().Remove(blob);
+
+        this.SaveChanges();
+    }
+    
+    // protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    // {
+    //     base.OnModelCreating(modelBuilder);
+    //
+    //     modelBuilder.Entity<BlobEntity>().ToTable("Blobs", SchemaName);
+    // }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<BlobEntity>().ToTable("Blobs", SchemaName);
     }
 }

@@ -11,23 +11,22 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Processes
+namespace Infrastructure.Processes;
+
+using System;
+using System.Linq.Expressions;
+
+// TODO: Does this even belong to a reusable infrastructure?
+// This for reading and writing process managers (also known as Sagas in the CQRS community)
+public interface IProcessManagerDataContext<T> : IDisposable
+    where T : class, IProcessManager
 {
-    using System;
-    using System.Linq.Expressions;
+    T Find(Guid id);
 
-    // TODO: Does this even belong to a reusable infrastructure?
-    // This for reading and writing process managers (also known as Sagas in the CQRS community)
-    public interface IProcessManagerDataContext<T> : IDisposable
-        where T : class, IProcessManager
-    {
-        T Find(Guid id);
+    void Save(T processManager);
 
-        void Save(T processManager);
-
-        // TODO: queryability to reload processes from correlation ids, etc. 
-        // Is this appropriate? How do others reload processes? (MassTransit 
-        // uses this kind of queryable approach, apparently).
-        T Find(Expression<Func<T, bool>> predicate, bool includeCompleted = false);
-    }
+    // TODO: queryability to reload processes from correlation ids, etc. 
+    // Is this appropriate? How do others reload processes? (MassTransit 
+    // uses this kind of queryable approach, apparently).
+    T Find(Expression<Func<T, bool>> predicate, bool includeCompleted = false);
 }

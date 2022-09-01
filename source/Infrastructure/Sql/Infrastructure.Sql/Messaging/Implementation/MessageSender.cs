@@ -11,25 +11,27 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Infrastructure.Sql.Messaging.Implementation
 {
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.Common;
-    using System.Data.Entity.Infrastructure;
-    using System.Data.SqlClient;
     using System.Transactions;
-
+    using System.Data.Common;
+    using System.Data.SqlClient;
+    
     public class MessageSender : IMessageSender
     {
-        private readonly IDbConnectionFactory connectionFactory;
+        private readonly DbContext dbContext;
         private readonly string name;
         private readonly string insertQuery;
 
-        public MessageSender(IDbConnectionFactory connectionFactory, string name, string tableName)
+        public MessageSender(DbContext dbContext, string name, string tableName)
         {
-            this.connectionFactory = connectionFactory;
+            this.dbContext = dbContext;
             this.name = name;
             this.insertQuery = string.Format("INSERT INTO {0} (Body, DeliveryDate, CorrelationId) VALUES (@Body, @DeliveryDate, @CorrelationId)", tableName);
         }
@@ -39,7 +41,7 @@ namespace Infrastructure.Sql.Messaging.Implementation
         /// </summary>
         public void Send(Message message)
         {
-            using (var connection = this.connectionFactory.CreateConnection(this.name))
+            using (var connection = this.dbContext.Database.GetDbConnection())
             {
                 connection.Open();
 
@@ -54,7 +56,7 @@ namespace Infrastructure.Sql.Messaging.Implementation
         {
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                using (var connection = this.connectionFactory.CreateConnection(this.name))
+                using (var connection = this.dbContext.Database.GetDbConnection())
                 {
                     connection.Open();
 

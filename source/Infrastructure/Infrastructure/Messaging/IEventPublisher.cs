@@ -11,15 +11,14 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging
-{
-    using System.Collections.Generic;
+namespace Infrastructure.Messaging;
 
-    /// <summary>
-    /// Defines that the object exposes events that are meant to be published.
-    /// </summary>
-    public interface IEventPublisher
-    {
-        IEnumerable<IEvent> Events { get; }
-    }
+using System.Collections.Generic;
+
+/// <summary>
+/// Defines that the object exposes events that are meant to be published.
+/// </summary>
+public interface IEventPublisher
+{
+    IEnumerable<IEvent> Events { get; }
 }

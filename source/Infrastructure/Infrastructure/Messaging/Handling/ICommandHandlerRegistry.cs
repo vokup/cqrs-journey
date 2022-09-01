@@ -11,10 +11,9 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging.Handling
+namespace Infrastructure.Messaging.Handling;
+
+public interface ICommandHandlerRegistry
 {
-    public interface ICommandHandlerRegistry
-    {
-        void Register(ICommandHandler handler);
-    }
+    void Register(ICommandHandler handler);
 }

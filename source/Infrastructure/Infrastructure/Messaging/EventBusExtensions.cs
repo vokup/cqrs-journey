@@ -11,24 +11,23 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging
+namespace Infrastructure.Messaging;
+
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// Provides usability overloads for <see cref="IEventBus"/>
+/// </summary>
+public static class EventBusExtensions
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    /// <summary>
-    /// Provides usability overloads for <see cref="IEventBus"/>
-    /// </summary>
-    public static class EventBusExtensions
+    public static void Publish(this IEventBus bus, IEvent @event)
     {
-        public static void Publish(this IEventBus bus, IEvent @event)
-        {
-            bus.Publish(new Envelope<IEvent>(@event));
-        }
+        bus.Publish(new Envelope<IEvent>(@event));
+    }
 
-        public static void Publish(this IEventBus bus, IEnumerable<IEvent> events)
-        {
-            bus.Publish(events.Select(x => new Envelope<IEvent>(x)));
-        }
+    public static void Publish(this IEventBus bus, IEnumerable<IEvent> events)
+    {
+        bus.Publish(events.Select(x => new Envelope<IEvent>(x)));
     }
 }

@@ -11,6 +11,8 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Infrastructure.Sql.MessageLog
 {
     using System;
@@ -21,22 +23,30 @@ namespace Infrastructure.Sql.MessageLog
     using Infrastructure.Messaging;
     using Infrastructure.Serialization;
 
+    public static class IDictionaryExtensions
+    {
+        public static TV GetValue<TK, TV>(this IDictionary<TK, TV> dict, TK key, TV defaultValue = default(TV))
+        {
+            return dict.TryGetValue(key, out var value) ? value : defaultValue;
+        }
+    }
+    
     public class SqlMessageLog : IEventLogReader
     {
-        private string nameOrConnectionString;
+        private DbContextOptions options;
         private IMetadataProvider metadataProvider;
         private ITextSerializer serializer;
 
-        public SqlMessageLog(string nameOrConnectionString, ITextSerializer serializer, IMetadataProvider metadataProvider)
+        public SqlMessageLog(DbContextOptions options, ITextSerializer serializer, IMetadataProvider metadataProvider)
         {
-            this.nameOrConnectionString = nameOrConnectionString;
+            this.options = options;
             this.serializer = serializer;
             this.metadataProvider = metadataProvider;
         }
 
         public void Save(IEvent @event)
         {
-            using (var context = new MessageLogDbContext(this.nameOrConnectionString))
+            using (var context = new MessageLogDbContext(this.options))
             {
                 var metadata = this.metadataProvider.GetMetadata(@event);
 
@@ -44,12 +54,12 @@ namespace Infrastructure.Sql.MessageLog
                 {
                     Id = Guid.NewGuid(),
                     SourceId = @event.SourceId.ToString(),
-                    Kind = metadata.TryGetValue(StandardMetadata.Kind),
-                    AssemblyName = metadata.TryGetValue(StandardMetadata.AssemblyName),
-                    FullName = metadata.TryGetValue(StandardMetadata.FullName),
-                    Namespace = metadata.TryGetValue(StandardMetadata.Namespace),
-                    TypeName = metadata.TryGetValue(StandardMetadata.TypeName),
-                    SourceType = metadata.TryGetValue(StandardMetadata.SourceType) as string,
+                    Kind = metadata.GetValue(StandardMetadata.Kind),
+                    AssemblyName = metadata.GetValue(StandardMetadata.AssemblyName),
+                    FullName = metadata.GetValue(StandardMetadata.FullName),
+                    Namespace = metadata.GetValue(StandardMetadata.Namespace),
+                    TypeName = metadata.GetValue(StandardMetadata.TypeName),
+                    SourceType = metadata.GetValue(StandardMetadata.SourceType),
                     CreationDate = DateTime.UtcNow.ToString("o"),
                     Payload = serializer.Serialize(@event),
                 });
@@ -59,7 +69,7 @@ namespace Infrastructure.Sql.MessageLog
 
         public void Save(ICommand command)
         {
-            using (var context = new MessageLogDbContext(this.nameOrConnectionString))
+            using (var context = new MessageLogDbContext(this.options))
             {
                 var metadata = this.metadataProvider.GetMetadata(command);
 
@@ -67,12 +77,12 @@ namespace Infrastructure.Sql.MessageLog
                 {
                     Id = Guid.NewGuid(),
                     SourceId = command.Id.ToString(),
-                    Kind = metadata.TryGetValue(StandardMetadata.Kind),
-                    AssemblyName = metadata.TryGetValue(StandardMetadata.AssemblyName),
-                    FullName = metadata.TryGetValue(StandardMetadata.FullName),
-                    Namespace = metadata.TryGetValue(StandardMetadata.Namespace),
-                    TypeName = metadata.TryGetValue(StandardMetadata.TypeName),
-                    SourceType = metadata.TryGetValue(StandardMetadata.SourceType) as string,
+                    Kind = metadata.GetValue(StandardMetadata.Kind),
+                    AssemblyName = metadata.GetValue(StandardMetadata.AssemblyName),
+                    FullName = metadata.GetValue(StandardMetadata.FullName),
+                    Namespace = metadata.GetValue(StandardMetadata.Namespace),
+                    TypeName = metadata.GetValue(StandardMetadata.TypeName),
+                    SourceType = metadata.GetValue(StandardMetadata.SourceType),
                     CreationDate = DateTime.UtcNow.ToString("o"),
                     Payload = serializer.Serialize(command),
                 });
@@ -82,18 +92,18 @@ namespace Infrastructure.Sql.MessageLog
 
         public IEnumerable<IEvent> Query(QueryCriteria criteria)
         {
-            return new SqlQuery(this.nameOrConnectionString, this.serializer, criteria);
+            return new SqlQuery(this.options, this.serializer, criteria);
         }
 
         private class SqlQuery : IEnumerable<IEvent>
         {
-            private string nameOrConnectionString;
+            private DbContextOptions options;
             private ITextSerializer serializer;
             private QueryCriteria criteria;
 
-            public SqlQuery(string nameOrConnectionString, ITextSerializer serializer, QueryCriteria criteria)
+            public SqlQuery(DbContextOptions options, ITextSerializer serializer, QueryCriteria criteria)
             {
-                this.nameOrConnectionString = nameOrConnectionString;
+                this.options = options;
                 this.serializer = serializer;
                 this.criteria = criteria;
             }
@@ -145,7 +155,7 @@ namespace Infrastructure.Sql.MessageLog
                 {
                     if (context == null)
                     {
-                        context = new MessageLogDbContext(sqlQuery.nameOrConnectionString);
+                        context = new MessageLogDbContext(sqlQuery.options);
                         var queryable = context.Set<MessageLogEntity>().AsQueryable()
                             .Where(x => x.Kind == StandardMetadata.EventKind);
 

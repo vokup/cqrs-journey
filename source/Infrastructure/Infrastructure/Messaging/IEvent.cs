@@ -11,18 +11,17 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure.Messaging
-{
-    using System;
+namespace Infrastructure.Messaging;
 
+using System;
+
+/// <summary>
+/// Represents an event message.
+/// </summary>
+public interface IEvent
+{
     /// <summary>
-    /// Represents an event message.
+    /// Gets the identifier of the source originating the event.
     /// </summary>
-    public interface IEvent
-    {
-        /// <summary>
-        /// Gets the identifier of the source originating the event.
-        /// </summary>
-        Guid SourceId { get; }
-    }
+    Guid SourceId { get; }
 }

@@ -11,20 +11,19 @@
 // See the License for the specific language governing permissions and limitations under the License.
 // ==============================================================================================================
 
-namespace Infrastructure
+namespace Infrastructure;
+
+using System;
+using System.Runtime.Serialization;
+
+[Serializable]
+public class ConcurrencyException : Exception
 {
-    using System;
-    using System.Runtime.Serialization;
+    public ConcurrencyException() { }
 
-    [Serializable]
-    public class ConcurrencyException : Exception
-    {
-        public ConcurrencyException() { }
+    public ConcurrencyException(string message) : base(message) { }
 
-        public ConcurrencyException(string message) : base(message) { }
+    public ConcurrencyException(string message, Exception inner) : base(message, inner) { }
 
-        public ConcurrencyException(string message, Exception inner) : base(message, inner) { }
-
-        protected ConcurrencyException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
+    protected ConcurrencyException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
