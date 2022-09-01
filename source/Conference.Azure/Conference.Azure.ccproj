@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,6 +7,9 @@
     <ProductVersion>1.7</ProductVersion>
     <ProjectGuid>{ee6d903f-17b1-429b-b0a4-55b89cc47c53}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Conference.Azure</RootNamespace>
     <AssemblyName>Conference.Azure</AssemblyName>
